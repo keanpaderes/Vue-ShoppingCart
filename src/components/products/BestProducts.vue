@@ -21,16 +21,16 @@ import gql from 'graphql-tag';
 export default {
   name: "BestProducts",
   apollo: {
-    pr_products: gql`query {
-      pr_products {
+    pr_products: gql`query  {
+      pr_products(where: {pr_product_groupings: {groupId: {_eq: 2}}}) {
         id
+        category
+        description
         image
         name
         price
         rating
         seller
-        description
-        category
       }
     }`,
   },
