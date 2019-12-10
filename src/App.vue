@@ -37,7 +37,7 @@
                 </i>
               </router-link>
             </li>
-            <li class="nav-item dropdown" v-if="isLogged()">
+            <!-- <li class="nav-item dropdown" v-if="isLogged()">
               <a
                 class="nav-link dropdown-toggle"
                 href="#"
@@ -49,8 +49,6 @@
               >{{this.loggedUser.firstName}}</a>
               <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                 <router-link to="/" class="dropdown-item">Profile</router-link>
-                <!-- <a class="dropdown-item" href="#">Another action</a>
-                <a class="dropdown-item" href="#">Something else here</a>-->
                 <router-link
                   to="/"
                   class="dropdown-item text-danger"
@@ -60,14 +58,14 @@
             </li>
             <li class="nav-item" v-if="!isLogged()">
               <router-link to="/login" class="nav-link">Login</router-link>
-            </li>
+            </li> -->
           </ul>
         </div>
       </nav>
       <router-view/>
     </main>
 
-    <footer class="container-fluid footer text-left mt-3">
+    <!-- <footer class="container-fluid footer text-left mt-3">
       <p class="mr-auto">
         Developed by:
         <strong>Mohammed Ismail</strong>
@@ -83,7 +81,7 @@
           <i class="fa fa-linkedin" aria-hidden="true" style="font-size:20px"></i>
         </a>
       </div>
-    </footer>
+    </footer> -->
   </div>
 </template>
 
