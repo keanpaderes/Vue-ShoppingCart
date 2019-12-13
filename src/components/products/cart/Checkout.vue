@@ -2,53 +2,54 @@
   <div class="cart-products">
     <div class="row mt-5">
       <div class="col-sm-8">
-        <form id="productCU">
-          <!-- <p v-if="errors.length">
+        <form id="shipping">
+          <p v-if="errors.length">
                   <b>Please correct the following error(s):</b>
                   <ul>
                     <li v-for="error in errors" :key="error">{{ error }}</li>
                   </ul>
-          </p>-->
+          </p>
           <div class="form-group">
-            <label for="productName">Address 1</label>
+            <label for="address1">Address 1</label>
             <input
               type="text"
               class="form-control"
-              id="productName"
-              name="productName"
-              aria-describedby="emailHelp"
-              placeholder="Enter Address"
+              id="address1"
+              v-model="address1"
+              name="address1"
+              placeholder="Enter Address 1"
             >
           </div>
           <div class="form-group">
-            <label for="productCategory">Address 2</label>
+            <label for="address2">Address 2</label>
             <input
-              type="password"
+              type="text"
               class="form-control"
-              id="productCategroyDummy"
-              placeholder="Password"
-              name="productCategroyDummy"
+              id="address2"
+              placeholder="Enter Address 2"
+              v-model="address2"
             >
           </div>
           <div class="form-group">
-            <label for="productSeller">Country</label>
+            <label for="city">City</label>
             <input
-              type="password"
+              type="text"
               class="form-control"
-              id="productSellerDummy"
-              placeholder="Password"
-              name="productSellerDummy"
+              id="city"
+              placeholder="Enter City"
+              v-model="city"
             >
           </div>
           <div class="row">
             <div class="col">
               <div class="form-group">
-                <label for="productRating">Zip code</label>
+                <label for="zipcode">Zip code</label>
                 <input
-                  type="password"
+                  type="text"
                   class="form-control"
-                  id="productRating"
-                  placeholder="Password"
+                  id="zipcode"
+                  v-model="zipcode"
+                  placeholder="Enter Zip Code"
                 >
               </div>
             </div>
@@ -63,12 +64,17 @@
       <div class="col-sm-4">
         <cart-calculator ref="cartCalculator"></cart-calculator>
         <ul class="list-group mb-3">
-          <router-link to="/products" class="btn btn-primary mt-2 text-white">Continue Shipping</router-link>
-          <a
+          <button
+            class="btn btn-success mt-2 text-white"
+            type="submit"
+            @click.prevent="createShippingDetail"
+          >Save changes</button>
+          <!-- <router-link to="/products" class="btn btn-primary mt-2 text-white">Continue Shopping</router-link> -->
+          <!-- <a
             href="javascript:;;"
             class="btn btn-success mt-2 text-white"
-            @click="createShippingDetail"
-          >Save & Pay</a>
+            type="submit"
+          >Save & Pay</a> -->
         </ul>
       </div>
     </div>
@@ -80,25 +86,74 @@ import { mapState, mapActions, mapMutations } from "vuex";
 import CartCalculator from "./CartCalculator";
 import axios from "axios";
 import { errorToaster } from "../../shared/service/ErrorHandler.js";
+import gql from 'graphql-tag';
+
 export default {
   name: "Checkout",
   components: { CartCalculator },
   data() {
     return {
-      shippingDetail: {
-        address1: "",
-        address2: "",
-        country: "",
-        zipCode: "",
-        shippingDate: "",
-        products: [],
-        userId: "",
-        totalPrice: ""
-      }
+      errors: [],
+      address1: "",
+      address2: "",
+      city: "",
+      zipcode: ""
     };
   },
+  apollo: {
+    sd_shipping_details: gql`query {
+      sd_shipping_details {
+        id
+        address1
+        address2
+        city
+        date
+        total
+        product_ids
+        zipcode
+      }
+    }`,
+  },
   methods: {
-    createShippingDetail() {}
+    createShippingDetail(e) {
+      this.errors = []
+      const { address1, address2, city, zipcode } = this;
+      const { productIds, totalValue } = this.$refs.cartCalculator;
+      // Error checking
+      if (!address1 && !address2) this.errors.push("Address required.")
+      if (!city) this.errors.push("City information required.")
+      if (!zipcode) this.errors.push("Zip code information required.")
+
+      this.$apollo.mutate({
+          mutation: gql`mutation insert_sd_shipping_details($address1: String!, $address2: String!, $city: String!, $products: String!, $totalValue: String!, $zipcode: String!) {
+            insert_sd_shipping_details(objects: {address1: $address1, address2: $address2, city: $city, product_ids: $products, total: $totalValue, zipcode: $zipcode}) {
+              returning {
+                id
+                date
+              }
+              affected_rows
+            }
+          }`,
+          variables:{
+            address1,
+            address2,
+            city,
+            products: productIds,
+            totalValue: totalValue.toString(),
+            zipcode
+          },
+          update: (cache, {data:{insert_sd_shipping_details}}) => {
+            console.log(insert_sd_shipping_details)
+          }
+        }
+      )
+      // this.address1 = ""
+      // this.address2 = ""
+      // this.city = ""
+      // this.zipcode = ""
+      e.preventDefault();
+      // location.reload();
+    }
   }
 };
 </script>

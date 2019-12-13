@@ -17,13 +17,6 @@
               class="btn btn-sm btn-outline-secondary"
               v-on:click="navigateProductDetail(item)"
             >View</button>
-
-            <button
-              type="button"
-              class="btn btn-sm btn-outline-secondary"
-              v-on:click="updateEditProduct(item, item._id)"
-              v-if="loggedUser && loggedUser.isAdmin"
-            >Edit</button>
           </div>
           <small class="text-muted footerIcons">
             <a href="javascript:;;" class="p-2">
@@ -53,13 +46,13 @@ export default {
     };
   },
   components: {},
-  computed: mapState(["loggedUser"]),
   methods: {
     navigateProductDetail(product) {
-      this.$router.push({
-        name: "productDetails",
-        params: { id: product._id }
-      });
+      // this.$router.push({
+      //   name: "productDetails",
+      //   params: { id: product.id }
+      // });
+      console.log(`Go to Product ${product.id}`)
     },
 
     ...mapMutations(["ADD_CART_LOCAL"]),
@@ -70,6 +63,7 @@ export default {
         infoToaster("Already Added", "Product Already Added");
       } else {
         successToaster("Added Successfully", "Product Added Successfully");
+        console.log(product);
         this.ADD_CART_LOCAL(product);
       }
     },

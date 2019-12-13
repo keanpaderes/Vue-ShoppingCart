@@ -16,8 +16,24 @@ import { errorToaster } from "../shared/service/ErrorHandler";
 import CardLoader from "../shared/CardLoader";
 import CardTemplate from "../shared/CardTemplate";
 import EditProduct from "./actions/EditProduct";
+import gql from 'graphql-tag';
+
 export default {
   name: "TopProducts",
+  apollo: {
+    pr_products: gql`query  {
+      pr_products(where: {pr_product_groupings: {groupId: {_eq: 1}}}) {
+        id
+        category
+        description
+        image
+        name
+        price
+        rating
+        seller
+      }
+    }`,
+  },
   components: { CardLoader, CardTemplate, EditProduct },
   data() {
     return {

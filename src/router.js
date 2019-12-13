@@ -38,35 +38,35 @@ export default new Router({
         path: '/cart',
         name: 'cart',
         component: () => import('./components/products/cart/CartProducts.vue'),
-        beforeEnter: (to, from, next) => {
-            if (isLoggedIn()) {
-                next()
-            } else {
-                next({
-                    name: 'login',
-                    query: {
-                        from: to.name
-                    }
-                })
-            }
-        }
+        // beforeEnter: (to, from, next) => {
+        //     if (isLoggedIn()) {
+        //         next()
+        //     } else {
+        //         next({
+        //             name: 'login',
+        //             query: {
+        //                 from: to.name
+        //             }
+        //         })
+        //     }
+        // }
     },
     {
         path: '/checkout',
         name: 'checkout',
         component: () => import('./components/products/cart/Checkout.vue'),
-        beforeEnter: (to, from, next) => {
-            if (isLoggedIn()) {
-                next()
-            } else {
-                next({
-                    name: 'login',
-                    query: {
-                        from: to.name
-                    }
-                })
-            }
-        }
+        // beforeEnter: (to, from, next) => {
+        //     if (isLoggedIn()) {
+        //         next()
+        //     } else {
+        //         next({
+        //             name: 'login',
+        //             query: {
+        //                 from: to.name
+        //             }
+        //         })
+        //     }
+        // }
     },
     {
         path: '/login',

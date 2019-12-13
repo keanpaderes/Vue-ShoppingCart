@@ -11,14 +11,14 @@
         :key="index"
       >
         <div>
-          <h6 class="my-0">{{product.productName}}</h6>
+          <h6 class="my-0">{{product.name}}</h6>
         </div>
-        <span class="text-muted" style="width:120px">₹ {{product.productPrice}}</span>
+        <span class="text-muted" style="width:120px">₱ {{product.price}}</span>
       </li>
       <hr>
       <li class="list-group-item d-flex justify-content-between">
-        <span>Total (INR)</span>
-        <strong>₹ {{totalValue.toFixed(2)}}</strong>
+        <span>Total (PHP)</span>
+        <strong>₱ {{totalValue.toFixed(2)}}</strong>
       </li>
     </ul>
   </div>
@@ -29,16 +29,20 @@ export default {
   name: "cartCalculator",
   data() {
     return {
-      totalValue: 0.0
+      totalValue: 0.0,
+      productIds: ""
     };
   },
   computed: mapState(["cartProducts"]),
   methods: {
     calulateTotalPrice() {
       this.totalValue = 0;
+      const ids = [];
       this.cartProducts.forEach(product => {
-        this.totalValue += parseFloat(product.productPrice.replace(",", ""));
+        ids.push(product.id);
+        this.totalValue += parseFloat(product.price.replace(",", ""));
       });
+      this.productIds = ids.join(",")
     }
   },
   created() {

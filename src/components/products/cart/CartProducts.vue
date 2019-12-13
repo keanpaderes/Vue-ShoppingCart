@@ -8,12 +8,12 @@
               <div class="card mb-4 shadow-sm" style="height: 410px">
                 <img
                   class="card-img-top mt-2"
-                  v-bind:src="item.productImage"
+                  v-bind:src="item.image"
                   alt="Card image cap"
                   style="max-height: 700px; max-width: 127.135px;margin: auto"
                 >
                 <div class="card-body">
-                  <h6 class="card-text">{{item.productName}}.</h6>
+                  <h6 class="card-text">{{item.name}}.</h6>
                   <div class="d-flex justify-content-between align-items-center">
                     <div class="btn-group">
                       <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
