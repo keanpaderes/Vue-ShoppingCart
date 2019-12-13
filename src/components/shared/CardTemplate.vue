@@ -48,10 +48,10 @@ export default {
   components: {},
   methods: {
     navigateProductDetail(product) {
-      // this.$router.push({
-      //   name: "productDetails",
-      //   params: { id: product.id }
-      // });
+      this.$router.push({
+        name: "productDetails",
+        params: { id: product.id }
+      });
       console.log(`Go to Product ${product.id}`)
     },
 

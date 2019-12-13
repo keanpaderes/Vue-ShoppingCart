@@ -1,0 +1,8 @@
+{
+  "name": "shippingDetails2Sheets",
+  "version": "0.0.1",
+  "dependencies": {
+    "googleapis": "^46.0.0",
+    "graphqurl": "^0.3.3"
+  }
+}
