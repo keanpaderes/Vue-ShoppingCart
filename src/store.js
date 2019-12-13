@@ -34,6 +34,11 @@ export default new Vuex.Store({
             state.cartProducts = []
             state.cartProducts = products
         },
+
+        EMPTY_CART_LOCAL: (state) => {
+            console.log("called");
+            state.cartProducts = []
+        }
     },
     actions: {}
 })

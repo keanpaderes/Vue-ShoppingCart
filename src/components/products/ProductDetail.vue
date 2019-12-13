@@ -6,8 +6,8 @@
           <div class="product-image">
             <div class="view hm-zoom z-depth-2" style="cursor: pointer">
               <img
-                v-bind:src="product.productImage"
-                v-bind:alt="product.productName"
+                v-bind:src="pr_products[0].image"
+                v-bind:alt="pr_products[0].name"
                 class="img-fluid rounded"
                 style="max-height: 700px; max-width: 127.135px;margin: auto"
               >
@@ -20,8 +20,7 @@
                   </div>
                   <span
                     class="text-muted"
-                    style="color:crimson !important"
-                  >₹ {{product.productPrice}}</span>
+                  >₱ {{pr_products[0].price}}</span>
                 </li>
                 <li class="list-group-item d-flex justify-content-between lh-condensed">
                   <div>
@@ -29,11 +28,10 @@
                   </div>
                   <span
                     class="text-muted"
-                    style="color:crimson !important"
-                  >{{product.productSeller}}</span>
+                  >{{pr_products[0].seller}}</span>
                 </li>
               </ul>
-              <button class="btn btn-primary" v-on:click="addToCart(product)">Add to Cart</button>
+              <button class="btn btn-primary" v-on:click="addToCart(pr_products[0])">Add to Cart</button>
             </div>
           </div>
         </div>
@@ -44,15 +42,15 @@
               <tbody>
                 <tr>
                   <th scope="row">Product Name</th>
-                  <td>{{product.productName}}</td>
+                  <td>{{pr_products[0].name}}</td>
                 </tr>
                 <tr>
                   <th scope="row">Product Description</th>
-                  <td>{{product.productDescription}}</td>
+                  <td>{{pr_products[0].description}}</td>
                 </tr>
                 <tr>
                   <th scope="row">Product Category</th>
-                  <td>{{product.productCategory}}</td>
+                  <td>{{pr_products[0].category}}</td>
                 </tr>
                 <tr>
                   <th scope="row">Product Rating</th>
@@ -86,16 +84,37 @@ import axios from "axios";
 import { mapState, mapActions, mapMutations } from "vuex";
 import CardTemplate from "../shared/CardTemplate";
 import { errorToaster } from "../../components/shared/service/ErrorHandler.js";
+import gql from 'graphql-tag';
 
 export default {
   name: "productDetail",
-  components: { CardTemplate },
   data() {
     return {
       product: new Object(),
-      similarProduct: []
+      similarProduct: [],
     };
   },
+  apollo: {
+    pr_products: {
+      query: gql`query pr_products($id: Int!){
+        pr_products(where: {id: {_eq: $id}}) {
+          id
+          category
+          description
+          image
+          name
+          price
+          rating
+          seller
+        }
+      }`,
+      prefetch: ({ route }) => ({ id: route.params.id }),
+      variables() {
+        return { id: parseInt(this.$route.params.id) }
+      }
+    },
+  },
+  components: { CardTemplate },
   methods: {
     getSimilarProduct(productSeller) {
       axios
@@ -114,29 +133,21 @@ export default {
       this.ADD_CART_LOCAL(product);
     }
   },
-  created() {
-    axios
-      .get(`${process.env.VUE_APP_BASE_URL}/products/${this.$route.params.id}`)
-      .then(response => {
-        this.product = response.data;
-        const starTotal = 5;
-        const starPercentage =
-          (Number(this.product.productRating) / starTotal) * 100;
-        // 3
-        const starPercentageRounded = `${Math.round(starPercentage / 10) *
-          10}%`;
-        // 4
-        document.querySelector(
-          `.stars-inner`
-        ).style.width = starPercentageRounded;
+  mounted() {
+    console.log(this.$apollo.queries.pr_products[0].rating);
+    const starTotal = 5;
+    const starPercentage =
+      (Number(this.$apollo.queries.pr_products[0].rating) / starTotal) * 100;
+    // 3
+    const starPercentageRounded = `${Math.round(starPercentage / 10) *
+      10}%`;
+    // 4
+    document.querySelector(
+      `.stars-inner`
+    ).style.width = starPercentageRounded;
 
-        // Getting Similar Product
-        this.getSimilarProduct(this.product.productSeller);
-      })
-      .catch(error => {
-        console.log(error);
-        errorToaster("Error while fetching similar products", "");
-      });
+    // Getting Similar Product
+    this.getSimilarProduct(this.$apollo.queries.pr_products[0].seller);
   }
 };
 </script>

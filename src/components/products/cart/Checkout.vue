@@ -68,7 +68,7 @@
             class="btn btn-success mt-2 text-white"
             type="submit"
             @click.prevent="createShippingDetail"
-          >Save changes</button>
+          >Submit order</button>
           <!-- <router-link to="/products" class="btn btn-primary mt-2 text-white">Continue Shopping</router-link> -->
           <!-- <a
             href="javascript:;;"
@@ -85,7 +85,7 @@
 import { mapState, mapActions, mapMutations } from "vuex";
 import CartCalculator from "./CartCalculator";
 import axios from "axios";
-import { errorToaster } from "../../shared/service/ErrorHandler.js";
+import { errorToaster, successToaster } from "../../shared/service/ErrorHandler.js";
 import gql from 'graphql-tag';
 
 export default {
@@ -115,6 +115,7 @@ export default {
     }`,
   },
   methods: {
+    ...mapMutations(["EMPTY_CART_LOCAL"]),
     createShippingDetail(e) {
       this.errors = []
       const { address1, address2, city, zipcode } = this;
@@ -124,6 +125,7 @@ export default {
       if (!city) this.errors.push("City information required.")
       if (!zipcode) this.errors.push("Zip code information required.")
 
+      // Runs mutation
       this.$apollo.mutate({
           mutation: gql`mutation insert_sd_shipping_details($address1: String!, $address2: String!, $city: String!, $products: String!, $totalValue: String!, $zipcode: String!) {
             insert_sd_shipping_details(objects: {address1: $address1, address2: $address2, city: $city, product_ids: $products, total: $totalValue, zipcode: $zipcode}) {
@@ -143,16 +145,20 @@ export default {
             zipcode
           },
           update: (cache, {data:{insert_sd_shipping_details}}) => {
-            console.log(insert_sd_shipping_details)
+            successToaster("Inserted Successfully!", "Order Sent Successfully");
           }
         }
-      )
-      // this.address1 = ""
-      // this.address2 = ""
-      // this.city = ""
-      // this.zipcode = ""
+      );
+
+      let v = this;
+      setTimeout(function () {
+        v.EMPTY_CART_LOCAL();
+        v.$router.push({
+          name: "home"
+        });
+      }, 1000);
+
       e.preventDefault();
-      // location.reload();
     }
   }
 };
