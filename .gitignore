@@ -22,3 +22,5 @@ yarn-error.log*
 
 # Config
 /server/mongo/configDummy.js
+
+event_system/lambda/sa.json
