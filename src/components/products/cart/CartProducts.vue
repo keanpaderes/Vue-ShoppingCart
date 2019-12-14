@@ -36,7 +36,7 @@
               <div class="error-actions">
                 <a class="btn text-white">
                   <span class="glyphicon glyphicon-envelope"></span>
-                  <router-link to="/products">Take me to Products Page</router-link>
+                  <router-link to="/">Take me to Products Page</router-link>
                 </a>
               </div>
             </div>
@@ -46,7 +46,7 @@
       <div class="col-4">
         <cart-calculator ref="cartCalculator"></cart-calculator>
         <ul class="list-group mb-3">
-          <router-link to="/products" class="btn btn-primary mt-2 text-white">Continue Shipping</router-link>
+          <router-link to="/" class="btn btn-primary mt-2 text-white">Continue Shopping</router-link>
           <router-link to="/checkout" class="btn btn-danger mt-2 text-white">Checkout</router-link>
         </ul>
       </div>
@@ -71,7 +71,7 @@ export default {
     removeProductCart(product) {
       const products = JSON.parse(localStorage.getItem("iki-cart"));
       for (let i = 0; i < products.length; i++) {
-        if (products[i]._id === product._id) {
+        if (products[i].id === product.id) {
           products.splice(i, 1);
         }
       }
